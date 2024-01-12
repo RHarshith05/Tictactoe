@@ -1,8 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const options = document.getElementById('options');
+    const playerBtn = document.getElementById('playerBtn');
+    const computerBtn = document.getElementById('computerBtn');
     const board = document.getElementById('board');
     const status = document.getElementById('status');
     const resetBtn = document.getElementById('reset-btn');
 
+    let isTwoPlayers = true; // Default: 2 Players
     let currentPlayer = 'X';
     let boardState = ['', '', '', '', '', '', '', '', ''];
     let gameActive = true;
@@ -41,8 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
                 status.textContent = `Player ${currentPlayer}'s turn`;
 
-                // If the next player is the computer, make a random move after a short delay
-                if (currentPlayer === 'O') {
+                // If the next player is the computer, make a move after a short delay
+                if (!isTwoPlayers && currentPlayer === 'O') {
                     setTimeout(makeComputerMove, 500);
                 }
             }
@@ -63,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Function to make a random move for the computer
+    // Function to make a move for the computer
     function makeComputerMove() {
         const emptyCells = boardState.reduce((acc, cell, index) => {
             if (cell === '') {
@@ -106,8 +110,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Event listeners for the options buttons
+    playerBtn.addEventListener('click', () => {
+        isTwoPlayers = true;
+        resetGame();
+        options.style.display = 'none';
+        board.style.display = 'grid';
+        resetBtn.style.display = 'block';
+    });
+
+    computerBtn.addEventListener('click', () => {
+        isTwoPlayers = false;
+        resetGame();
+        options.style.display = 'none';
+        board.style.display = 'grid';
+        resetBtn.style.display = 'block';
+
+        // If the computer is the first player, make a move after a short delay
+        if (currentPlayer === 'O') {
+            setTimeout(makeComputerMove, 500);
+        }
+    });
+
     // Event listener for the reset button
-    resetBtn.addEventListener('click', resetGame);
+    resetBtn.addEventListener('click', () => {
+        options.style.display = 'flex';
+        board.style.display = 'none';
+        resetBtn.style.display = 'none';
+    });
 
     // Initialize the game board
     initializeBoard();
